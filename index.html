@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>SmartTaxi</title>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" charset="utf-8">
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places"></script>
+		<script src="js/mapas.js"></script>
+		<link href="estilos/estilos.css" rel="stylesheet" type="text/css"/>
+	</head>
+	
+	<body onload="initialize()">
+		<header>
+			<h1>SmartTaxi</h1>
+		</header>
+		<div id="map-canvas"></div>
+		<form>
+			Origen:  <input name="origen" type="text" id="ac1"/>
+			Obtner Localizacion por GPS <input type="button" name="Obtener Localizacion" onclick=""/><br>
+			Destino: <input name="destino" type="text" id="ac2"/>
+			<input type="submit" name="Enviar" onclick=""/>
+			
+		</form>
+	</body>
+</html>

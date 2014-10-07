@@ -1,0 +1,16 @@
+html, body {
+	height: 100%;
+	margin: 0px;
+	padding: 0px
+}
+
+#map-canvas {
+	height: 70%;
+	margin: 0px;
+	padding: 0px
+}
+
+#ac1, #ac2{
+  width: 50%;
+  height: 25px;
+}
