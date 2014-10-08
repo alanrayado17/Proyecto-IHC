@@ -12,12 +12,12 @@
 		<header>
 			<h1>SmartTaxi</h1>
 		</header>
-		<div id="map-canvas"></div>
+		<div id="map-canvas"><!--Posicion del mapa--></div>
 		<form>
 			Origen:  <input type="text" id="origen"/>
-			Obtner Localizacion por GPS <input type="button" id="geo" onclick="obtenerGeo()"/><br>
+			Obtner Localizacion por GPS <input type="button" id="geo" onclick="getGeo()"/><br>
 			Destino: <input type="text" id="destino"/>
-			<input type="submit" name="Enviar" onclick="calcRoute()"/>
+			<input type="button" id="calcularRuta" name="Calcular Ruta" onclick="calcRoute()"/>
 			
 		</form>
 	</body>

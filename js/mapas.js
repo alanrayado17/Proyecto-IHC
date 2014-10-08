@@ -8,8 +8,11 @@ var origen;
 var geocoder;
 var iwOrigen;
 var iwDestino;
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
 
 function initialize() {
+	directionsDisplay = new google.maps.DirectionsRenderer();
 	//Map options
 	var mapOptions = {
 		zoom : 12,
@@ -19,6 +22,9 @@ function initialize() {
 
 	//Creation of the map object
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+	directionsDisplay.setMap(map);
+
 	geocoder = new google.maps.Geocoder();
 	iwOrigen = new google.maps.InfoWindow();
 	iwDestino = new google.maps.InfoWindow();
@@ -92,15 +98,23 @@ function initialize() {
 			});
 		});
 	}
-
 }//end of funtion initialize()
 
-function ruta() {
-
+function calcRoute() {
+	var request = {
+		origin : origen.Position,
+		destination : destino.Position,
+		travelMode : google.maps.TravelMode.DRIVING
+	};
+	directionsService.route(request, function(response, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			directionsDisplay.setDirections(response);
+		}
+	});
 }
 
 //geolocation function
-function obtenerGeo() {
+function getGeo() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
 			var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
