@@ -3,11 +3,10 @@
 // is probably because you have denied permission for location sharing.
 
 var map;
-var directionsDisplay;
-var directionsService = new google.maps.DirectionsService();
+var destino;
+var origen;
 
 function initialize() {
-	directionsDisplay = new google.maps.DirectionsRenderer();
 	//Map options
 	var mapOptions = {
 		zoom : 12,
@@ -17,7 +16,18 @@ function initialize() {
 
 	//Creation of the map object
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-	directionsDisplay.setMap(map);
+
+	origen = new google.maps.Marker({
+		map : map,
+		draggable : true,
+		animation : google.maps.Animation.DROP
+	});
+	
+	destino = new google.maps.Marker({
+		map : map,
+		draggable : true,
+		animation : google.maps.Animation.DROP
+	});
 
 	//autocomplete Options
 	var acOptions = {
@@ -27,24 +37,19 @@ function initialize() {
 	//creation of the autocomplete object
 	var ac1 = new google.maps.places.Autocomplete(document.getElementById('origen'), acOptions);
 	var ac2 = new google.maps.places.Autocomplete(document.getElementById('destino'), acOptions);
-	//binding of the autocomplete object to the map object
+
+	//binding of the map boundaries to the ac bounderies
 	ac1.bindTo('bounds', map);
 	ac2.bindTo('bounds', map);
-	addListener(ac1);
-	addListener(ac2);
-	
-	//creation of the listener of the autocomplete forms
-	function addListener(ac) {
+	addListenerOrigen(ac1);
+	addListenerDestino(ac2);
+
+	//creation of the listener that responds to locations selected and creation of markers
+	function addListenerDestino(ac) {
 		google.maps.event.addListener(ac, 'place_changed', function() {
 			var infoWindow = new google.maps.InfoWindow();
-			var marker = new google.maps.Marker({
-				map: map,
-				draggable: true,
-				animation: google.maps.Animation.DROP
-			});
-			
+			infoWindow.setContent("");
 			infoWindow.close();
-			
 			var place = ac.getPlace();
 			if (place.geometry.viewport) {
 				map.fitBounds(place.geometry.viewport);
@@ -52,45 +57,58 @@ function initialize() {
 				map.setCenter(place.geometry.location);
 				map.setZoom(17);
 			}
-			marker.setPosition(place.geometry.location);
+
+			destino.setPosition(place.geometry.location);
 			infoWindow.setContent('<div><strong>' + place.name + '</strong><br>');
-			infoWindow.open(map, marker);
-			google.maps.event.addListener(marker, 'click', function(e) {
-				infoWindow.open(map, marker);
+			infoWindow.open(map, destino);
+			google.maps.event.addListener(destino, 'click', function(e) {
+				infoWindow.open(map, destino);
 			});
 		});
 	}
+
+	function addListenerOrigen(ac) {
+		google.maps.event.addListener(ac, 'place_changed', function() {
+			var infoWindow = new google.maps.InfoWindow();
+			infoWindow.setContent("");
+			infoWindow.close();
+			var place = ac.getPlace();
+			if (place.geometry.viewport) {
+				map.fitBounds(place.geometry.viewport);
+
+			} else {
+				map.setCenter(place.geometry.location);
+				map.setZoom(17);
+			}
+
+			origen.setPosition(place.geometry.location);
+			infoWindow.setContent('<div><strong>' + place.name + '</strong><br>');
+			infoWindow.open(map, origen);
+			google.maps.event.addListener(origen, 'click', function(e) {
+				infoWindow.open(map, origen);
+			});
+		});
+	}
+
 }//end of funtion initialize()
 
-function calcRoute() {
-  var start = ac1.getPlace().geometry.location;
-  var end = ac2.getPlace().geometry.location;
-  var request = {
-      origin:start,
-      destination:end,
-      travelMode: google.maps.TravelMode.DRIVING
-  };
-  directionsService.route(request, function(response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-    }
-  });
+function ruta() {
+
 }
 
-
-function obtenerLocal() {
+//geolocation function
+function obtenerGeo() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
 			var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-			var origen = document.getElementById("origen");
+			var infoWindow = new google.maps.InfoWindow();
+			infoWindow.setContent("");
+			infoWindow.close();
+			origen.setPosition(pos);
 			map.setCenter(pos);
-			var marker = new google.maps.Marker({
-				position: pos,
-				map: map,
-				draggable: true,
-				animation: google.maps.Animation.DROP
-			});
 			map.setZoom(17);
+			infoWindow.setContent('<div><strong>' + geocoder.geocode({'latLng':pos},callback) + '</strong><br>');
+			infoWindow.open(map, origen);
 		}, function() {
 			handleNoGeolocation(true);
 		});
