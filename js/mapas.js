@@ -3,8 +3,11 @@
 // is probably because you have denied permission for location sharing.
 
 var map;
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
 
 function initialize() {
+	directionsDisplay = new google.maps.DirectionsRenderer();
 	//Map options
 	var mapOptions = {
 		zoom : 12,
@@ -14,6 +17,7 @@ function initialize() {
 
 	//Creation of the map object
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	directionsDisplay.setMap(map);
 
 	//autocomplete Options
 	var acOptions = {
@@ -21,18 +25,26 @@ function initialize() {
 	};
 
 	//creation of the autocomplete object
-	var ac1 = new google.maps.places.Autocomplete(document.getElementById('ac1'), acOptions);
-	var ac2 = new google.maps.places.Autocomplete(document.getElementById('ac2'), acOptions);
+	var ac1 = new google.maps.places.Autocomplete(document.getElementById('origen'), acOptions);
+	var ac2 = new google.maps.places.Autocomplete(document.getElementById('destino'), acOptions);
 	//binding of the autocomplete object to the map object
 	ac1.bindTo('bounds', map);
 	ac2.bindTo('bounds', map);
 	addListener(ac1);
 	addListener(ac2);
-	//creation of the listener that responds to typed tex
-
+	
+	//creation of the listener of the autocomplete forms
 	function addListener(ac) {
 		google.maps.event.addListener(ac, 'place_changed', function() {
+			var infoWindow = new google.maps.InfoWindow();
+			var marker = new google.maps.Marker({
+				map: map,
+				draggable: true,
+				animation: google.maps.Animation.DROP
+			});
+			
 			infoWindow.close();
+			
 			var place = ac.getPlace();
 			if (place.geometry.viewport) {
 				map.fitBounds(place.geometry.viewport);
@@ -48,35 +60,29 @@ function initialize() {
 			});
 		});
 	}
-
-
-	google.maps.event.addListener(ac2, 'place_changed', function() {
-		infoWindow.close();
-		var place = ac2.getPlace();
-		if (place.geometry.viewport) {
-			map.fitBounds(place.geometry.viewport);
-		} else {
-			map.setCenter(place.geometry.location);
-			map.setZoom(17);
-		}
-		marker.setPosition(place.geometry.location);
-		infoWindow.setContent('<div><strong>' + place.name + '</strong><br>');
-		infoWindow.open(map, marker);
-		google.maps.event.addListener(marker, 'click', function(e) {
-			infoWindow.open(map, marker);
-		});
-	});
-
 }//end of funtion initialize()
 
-function ruta() {
-
+function calcRoute() {
+  var start = ac1.getPlace().geometry.location;
+  var end = ac2.getPlace().geometry.location;
+  var request = {
+      origin:start,
+      destination:end,
+      travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
 }
+
 
 function obtenerLocal() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
 			var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+			var origen = document.getElementById("origen");
 			map.setCenter(pos);
 			var marker = new google.maps.Marker({
 				position: pos,

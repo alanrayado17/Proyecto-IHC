@@ -14,10 +14,10 @@
 		</header>
 		<div id="map-canvas"></div>
 		<form>
-			Origen:  <input name="origen" type="text" id="ac1"/>
-			Obtner Localizacion por GPS <input type="button" name="Obtener Localizacion" onclick="obtenerLocal()"/><br>
-			Destino: <input name="destino" type="text" id="ac2"/>
-			<input type="submit" name="Enviar" onclick=""/>
+			Origen:  <input type="text" id="origen"/>
+			Obtner Localizacion por GPS <input type="button" id="geo" onclick="obtenerLocal()"/><br>
+			Destino: <input type="text" id="destino"/>
+			<input type="submit" name="Enviar" onclick="calcRoute()"/>
 			
 		</form>
 	</body>
