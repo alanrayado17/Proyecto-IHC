@@ -129,6 +129,7 @@ function getGeo() {
 						origen.setPosition(pos);
 						iwOrigen.setContent(results[1].formatted_address);
 						iwOrigen.open(map, origen);
+						document.getElementById('origen').setAttribute('value',results[1].formatted_address);
 					} else {
 						alert('No results found');
 					}
