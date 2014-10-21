@@ -28,6 +28,7 @@ function initialize() {
 	geocoder = new google.maps.Geocoder();
 	iwOrigen = new google.maps.InfoWindow();
 	iwDestino = new google.maps.InfoWindow();
+	
 	origen = new google.maps.Marker({
 		map : map,
 		draggable : false,
